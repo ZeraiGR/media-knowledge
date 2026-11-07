@@ -10,9 +10,18 @@
 
 ## Состояние проекта
 
-В репозитории находится техническое решение. Клиент, API, веб-плеер и обработчик
-ещё не реализованы. Облачные ресурсы не созданы, интеграции не подключены.
-Команд запуска приложения и готовых установщиков пока нет.
+Подготовлены четыре публичных репозитория, CI/CD и инфраструктурные приложения.
+Go API с PostgreSQL и веб-клиент развёрнуты на VPS через GitHub Actions и доступны
+через Tailscale. Flutter-клиент проверяет выпуски и подключается к закрытому API.
+Библиотека, синхронизация, плеер и локальный ИИ пока не реализованы.
+S3 ожидает аккаунта с биллингом и согласованного бюджета.
+
+[Общий GitHub Project](https://github.com/users/ZeraiGR/projects/1) связывает
+[Flutter-клиент](https://github.com/ZeraiGR/media-knowledge-client),
+[сервер](https://github.com/ZeraiGR/media-knowledge-server) и
+[веб-клиент](https://github.com/ZeraiGR/media-knowledge-web).
+Инструкции выпуска и ограничения платформ находятся в
+[руководстве по инфраструктуре](docs/infrastructure.md).
 
 ## Техническое решение
 
@@ -21,6 +30,7 @@
 - [Медиа, тайм-коды, транскрипция и RAG](docs/media-and-ai.md).
 - [Эксплуатация, стоимость и восстановление](docs/operations.md).
 - [Этапы реализации и критерии приёмки](docs/delivery.md).
+- [Репозитории, CI/CD, обновления и подключение S3](docs/infrastructure.md).
 
 Подробная документация также ведётся в личном портале:
 [раздел Media Knowledge](https://github.com/ZeraiGR/personal-docs/tree/main/src/content/docs/personal/media-knowledge).

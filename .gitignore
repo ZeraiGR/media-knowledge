@@ -21,3 +21,6 @@ cache/
 media/
 *.gguf
 *.safetensors
+
+__pycache__/
+*.pyc

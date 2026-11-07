@@ -1,0 +1,11 @@
+{
+  "lifecycleRules": [
+    {
+      "id": "abort-incomplete-upload",
+      "enabled": true,
+      "abortIncompleteMultipartUpload": {
+        "daysAfterExpiration": "1"
+      }
+    }
+  ]
+}
