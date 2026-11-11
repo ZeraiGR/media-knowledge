@@ -19,7 +19,7 @@ if [[ -n "${YC_PROFILE:-}" ]]; then
 fi
 yc storage bucket update "$S3_BUCKET" "${profile_args[@]}" \
   "${acl_args[@]}" --public-read=false --public-list=false --public-config-read=false \
-  --max-size "${S3_MAX_BYTES:-10737418240}" \
+  --max-size "${S3_MAX_BYTES:-1099511627776}" \
   --versioning versioning-enabled \
   --cors "allowed-origins=[$WEB_ORIGIN],allowed-methods=[method-get,method-head,method-put,method-post,method-delete],allowed-headers=[*],expose-headers=[ETag,Content-Range,Accept-Ranges],max-age-seconds=600" \
   --lifecycle-rules-from-file "$(dirname "$0")/lifecycle.json" \
