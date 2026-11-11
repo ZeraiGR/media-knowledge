@@ -1,0 +1,7 @@
+{
+  "repository": "rclone:backup:MediaKnowledge-db-restic",
+  "repositoryId": "replace-with-verified-restic-repository-id",
+  "remote": "backup:",
+  "rcloneConfig": "/etc/media-knowledge/rclone.conf",
+  "passwordFile": "/etc/media-knowledge/backup-password"
+}

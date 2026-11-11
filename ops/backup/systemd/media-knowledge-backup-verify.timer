@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly restore check of Media Knowledge metadata
+
+[Timer]
+OnCalendar=Sun *-*-* 04:15:00 UTC
+RandomizedDelaySec=10m
+Persistent=true
+Unit=media-knowledge-backup-verify.service
+
+[Install]
+WantedBy=timers.target

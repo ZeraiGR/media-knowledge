@@ -1,0 +1,17 @@
+[Unit]
+Description=Encrypted external Media Knowledge PostgreSQL backup
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/media-knowledge/backup.py backup
+TimeoutStartSec=45min
+UMask=0077
+Nice=15
+IOSchedulingClass=idle
+CPUQuota=40%
+MemoryMax=384M
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=full

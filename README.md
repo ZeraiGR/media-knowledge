@@ -33,6 +33,7 @@ Go API с PostgreSQL и веб-клиент развёрнуты на VPS чер
 - [Эксплуатация, стоимость и восстановление](docs/operations.md).
 - [Этапы реализации и критерии приёмки](docs/delivery.md).
 - [Репозитории, CI/CD, обновления и подключение S3](docs/infrastructure.md).
+- [Резервирование и восстановление PostgreSQL](docs/database-backup.md).
 
 Подробная документация также ведётся в личном портале:
 [раздел Media Knowledge](https://github.com/ZeraiGR/personal-docs/tree/main/src/content/docs/personal/media-knowledge).
