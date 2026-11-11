@@ -4,8 +4,21 @@ set -euo pipefail
 : "${WEB_ORIGIN:?Set exact HTTPS WEB_ORIGIN}"
 [[ "$WEB_ORIGIN" =~ ^https://[a-zA-Z0-9.-]+(:[0-9]+)?$ ]] || { echo 'WEB_ORIGIN must be an exact HTTPS origin' >&2; exit 1; }
 # Requires an authenticated yc profile and an existing dedicated private bucket.
-yc storage bucket update "$S3_BUCKET" \
-  --acl private --public-read=false --public-list=false --public-config-read=false \
+acl_args=(--acl private)
+if [[ -n "${S3_SERVICE_ACCOUNT_ID:-}" ]]; then
+  : "${S3_OWNER_ID:?Set S3_OWNER_ID to preserve owner administration}"
+  acl_args=(
+    --grants "grantee-id=$S3_OWNER_ID,grant-type=grant-type-account,permission=permission-full-control"
+    --grants "grantee-id=$S3_SERVICE_ACCOUNT_ID,grant-type=grant-type-account,permission=permission-read"
+    --grants "grantee-id=$S3_SERVICE_ACCOUNT_ID,grant-type=grant-type-account,permission=permission-write"
+  )
+fi
+profile_args=()
+if [[ -n "${YC_PROFILE:-}" ]]; then
+  profile_args=(--profile "$YC_PROFILE")
+fi
+yc storage bucket update "$S3_BUCKET" "${profile_args[@]}" \
+  "${acl_args[@]}" --public-read=false --public-list=false --public-config-read=false \
   --max-size "${S3_MAX_BYTES:-10737418240}" \
   --versioning versioning-enabled \
   --cors "allowed-origins=[$WEB_ORIGIN],allowed-methods=[method-get,method-head,method-put,method-post,method-delete],allowed-headers=[*],expose-headers=[ETag,Content-Range,Accept-Ranges],max-age-seconds=600" \

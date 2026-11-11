@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests -v
-      - run: bash -n ops/install.sh ops/storage/configure.sh
+      - run: bash -n ops/install.sh ops/storage/configure.sh ops/storage/install-signer.sh
       - name: Validate Compose
         env:
           POSTGRES_PASSWORD: synthetic
