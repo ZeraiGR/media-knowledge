@@ -8,11 +8,12 @@
 
 ## CI и выпуски
 
-Текущие исходники всех четырёх репозиториев прошли CI. Проверенные запуски:
+Исходники всех четырёх репозиториев прошли CI, включая исправление приёмника.
+Проверенные запуски:
 
 | Компонент | Успешный запуск |
 | --- | --- |
-| Инфраструктура | [43276481143](https://github.com/ZeraiGR/media-knowledge/actions/runs/43276481143), main `88c3d35` до исправления приёмника |
+| Инфраструктура | [43279513808](https://github.com/ZeraiGR/media-knowledge/actions/runs/43279513808), main `72934c8` с исправлением приёмника |
 | Flutter | [42352635620](https://github.com/ZeraiGR/media-knowledge-client/actions/runs/42352635620), `a04dde6` |
 | API | [42352351342](https://github.com/ZeraiGR/media-knowledge-server/actions/runs/42352351342), `e94bf23` |
 | Веб-клиент | [43038236370](https://github.com/ZeraiGR/media-knowledge-web/actions/runs/43038236370), `bac5fe9` |
