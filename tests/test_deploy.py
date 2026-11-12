@@ -22,15 +22,30 @@ class DeploymentTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
             images=root/'images.env'
-            before='SERVER_IMAGE=previous-server\nWEB_IMAGE=previous-web\n'
+            before='SERVER_IMAGE=ghcr.io/zeraigr/media-knowledge-server@sha256:'+('b'*64)+'\nWEB_IMAGE=previous-web\n'
             images.write_text(before)
             request=io.TextIOWrapper(io.BytesIO(json.dumps({'digest':'sha256:'+'a'*64,'token':'secret'}).encode()))
-            with patch.object(deploy,'ROOT',root),patch.object(deploy,'IMAGES',images),patch('sys.argv',['deploy','server']),patch('sys.stdin',request),patch.object(deploy.subprocess,'run') as run,patch.object(deploy.urllib.request,'urlopen',side_effect=OSError()),patch.object(deploy.time,'sleep'):
+            with patch.object(deploy,'ROOT',root),patch.object(deploy,'IMAGES',images),patch('sys.argv',['deploy','server']),patch('sys.stdin',request),patch.object(deploy.subprocess,'run') as run,patch.object(deploy,'wait_ready',side_effect=[RuntimeError('candidate not ready'),None]) as ready:
                 with self.assertRaises(RuntimeError):deploy.main()
                 self.assertEqual(images.read_text(),before)
+                self.assertEqual(ready.call_count,2)
+                rollback=run.call_args_list[-1]
+                self.assertEqual(rollback.args[0][-1],'api')
+                self.assertTrue(rollback.kwargs['check'])
                 calls=[str(c) for c in run.call_args_list]
                 self.assertTrue(any('--pull' in c and 'never' in c for c in calls))
                 self.assertFalse(any('prune' in c for c in calls))
+
+    def test_rollback_readiness_failure_is_reported(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            images=root/'images.env'
+            before='SERVER_IMAGE=ghcr.io/zeraigr/media-knowledge-server@sha256:'+('b'*64)+'\n'
+            images.write_text(before)
+            request=io.TextIOWrapper(io.BytesIO(json.dumps({'digest':'sha256:'+'a'*64,'token':'secret'}).encode()))
+            with patch.object(deploy,'ROOT',root),patch.object(deploy,'IMAGES',images),patch('sys.argv',['deploy','server']),patch('sys.stdin',request),patch.object(deploy.subprocess,'run'),patch.object(deploy,'wait_ready',side_effect=[RuntimeError('candidate'),RuntimeError('rollback not ready')]):
+                with self.assertRaisesRegex(RuntimeError,'rollback not ready'):deploy.main()
+                self.assertEqual(images.read_text(),before)
 
     def test_image_replacement_is_atomic_and_private(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -24,6 +24,18 @@ def write_images(values):
     target.replace(IMAGES)
 
 
+def wait_ready(port, path):
+    for _ in range(30):
+        try:
+            with urllib.request.urlopen(f'http://127.0.0.1:{port}{path}', timeout=2) as response:
+                if response.status == 200:
+                    return
+        except OSError:
+            pass
+        time.sleep(2)
+    raise RuntimeError('readiness timed out')
+
+
 def main():
     component = sys.argv[1]
     service, variable, repo, port, path = REPOS[component]
@@ -49,22 +61,16 @@ def main():
             subprocess.run(compose + ['up', '-d', '--no-deps', '--pull', 'never', service], env=env, check=True)
         try:
             up()
-            for _ in range(30):
-                try:
-                    with urllib.request.urlopen(f'http://127.0.0.1:{port}{path}', timeout=2) as response:
-                        if response.status == 200:
-                            print(f'{component} deployed at {digest}')
-                            return
-                except OSError:
-                    pass
-                time.sleep(2)
-            raise RuntimeError('readiness timed out')
+            wait_ready(port, path)
+            print(f'{component} deployed at {digest}')
         except Exception:
             write_images(previous)
             if '@sha256:' in previous.get(variable, ''):
-                subprocess.run(compose + ['up', '-d', '--no-deps', '--pull', 'never', service], env=env, check=False)
+                subprocess.run(compose + ['up', '-d', '--no-deps', '--pull', 'never', service], env=env, check=True)
+                wait_ready(port, path)
+                print(f'{component} rollback ready', file=sys.stderr)
             else:
-                subprocess.run(compose + ['stop', service], env=env, check=False)
+                subprocess.run(compose + ['stop', service], env=env, check=True)
             raise
 
 
